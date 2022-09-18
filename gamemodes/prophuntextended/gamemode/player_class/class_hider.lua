@@ -1,6 +1,6 @@
 --[[
 	The MIT License (MIT)
-	
+
 	Copyright (c) 2015 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,9 +25,9 @@
 DEFINE_BASECLASS( "Default" )
 local CLASS = {}
 CLASS.DisplayName		= "Hider"
-CLASS.DuckSpeed			= 0.0		-- How fast to go from not ducking, to ducking
-CLASS.UnDuckSpeed		= 0.0		-- How fast to go from ducking, to not ducking
-CLASS.CanUseFlashlight	= false		-- Can we use the flashlight
+CLASS.DuckSpeed			= 0.2		-- How fast to go from not ducking, to ducking
+CLASS.UnDuckSpeed		= 0.2		-- How fast to go from ducking, to not ducking
+CLASS.CanUseFlashlight	= true		-- Can we use the flashlight
 CLASS.UseVMHands		= false		-- Uses viewmodel hands
 
 -- ------------------------------------------------------------------------- --
@@ -37,13 +37,13 @@ CLASS.UseVMHands		= false		-- Uses viewmodel hands
 function CLASS:Spawn()
 	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.Spawn(self, self.Player)
-		
+
 	-- Settings
 	self.Player:SetMaxHealth(GAMEMODE.Config.Hider:HealthMax())
 	self.Player:SetHealth(GAMEMODE.Config.Hider:Health())
 	self.Player:SetRenderMode(RENDERMODE_TRANSALPHA)
 	self.Player:SetColor(Color(0,0,0,0))
-	
+
 	-- Speed and Jump Power
 	self.Player:SetWalkSpeed(GAMEMODE.Config.Hider:WalkSpeed())
 	if (GAMEMODE.Config.Hider:Sprint()) then
@@ -52,22 +52,22 @@ function CLASS:Spawn()
 		self.Player:SetRunSpeed(GAMEMODE.Config.Hider:WalkSpeed())
 	end
 	self.Player:SetJumpPower(GAMEMODE.Config.Hider:JumpPower())
-	
+
 	-- Hull & View Offset
 	GAMEMODE:PlayerHullFromEntity(self.Player, nil)
 	GAMEMODE:PlayerSetViewOffset(self.Player, Vector(0,0,72), Vector(0,0,72))
-	
+
 	-- Collision Group
 	self.Player:SetCollisionGroup(COLLISION_GROUP_PLAYER)
 	self.Player:SetSolid(SOLID_VPHYSICS)
-	
+
 	-- Prop Stuff
 	self.Player.Data.Prop = ents.Create("ph_prop")
 	self.Player.Data.Prop:SetOwner(self.Player)
 	self.Player.Data.Prop:Spawn()
 	self.Player:DeleteOnRemove(self.Player.Data.Prop)
 	self.Player.Data.PropContraint = constraint.NoCollide(self.Player, self.Player.Data.Prop, 0, 0)
-	
+
 	-- Assign Hands (Auto Networked Sync!)
 	local oldhands = self.Player:GetHands()
 	if (IsValid(oldhands)) then oldhands:Remove() end
@@ -77,12 +77,12 @@ end
 -- Death
 function CLASS:DoDeath(attacker, dmginfo)
 	BaseClass.DoDeath(self, attacker, dmginfo)
-	if GAMEMODE.Config:DebugLog() then 
+	if GAMEMODE.Config:DebugLog() then
 		if (IsValid(attacker) && attacker:IsPlayer() && attacker != self.Player) then
 			print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") killed by '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..").")
 		end
 	end
-	
+
 	if (!IsValid(attacker)) then return end
 	if (!attacker:IsPlayer()) then return end
 	if (attacker:Team() == self.Player:Team()) then return end
@@ -99,7 +99,7 @@ end
 function CLASS:PostDeath()
 	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.") end
 	BaseClass.PostDeath(self, inflictor, attacker)
-	
+
 	-- Delete Hands Model
 	if IsValid(self.Player.Data.PropConstraint) then
 		self.Player.Data.PropConstraint:Remove()
@@ -110,13 +110,13 @@ function CLASS:PostDeath()
 	if IsValid(self.Player.Data.Prop) then
 		self.Player.Data.Prop:Remove()
 	end
-	
+
 	-- Collision Group
 	self.Player:SetCollisionGroup(COLLISION_GROUP_PLAYER)
-	
+
 	-- Hull
 	GAMEMODE:PlayerHullFromEntity(self.Player, nil)
-	
+
 	-- Rendering
 	self.Player:SetRenderMode(RENDERMODE_NORMAL)
 	self.Player:SetColor(Color(255,255,255,255))
@@ -130,14 +130,14 @@ function CLASS:DeathThink()
 	if 1 > (CurTime() - self.Player.Data.AliveTime) then
 		return false
 	end
-	
+
 	self.Player:Spawn()
 	return true
 end
 
 -- Visible Stuff
 function CLASS:SetModel()
-	self.Player:SetModel("models/Gibs/Antlion_gib_small_3.mdl")
+	--self.Player:SetModel("models/Gibs/Antlion_gib_small_3.mdl")
 end
 
 -- Interaction
@@ -145,13 +145,13 @@ function CLASS:Use(ent)
 	if (!(BaseClass.Use(self, ent))) then
 		return false
 	end
-	
+
 	-- Allow interacting while crouched instead of turning into the prop.
 	if (self.Player:Crouching()) then
 		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") interacted with "..ent:GetClass().." ("..ent:GetModel()..").") end
 		return true
 	end
-	
+
 	-- Check Lists and other Parameters
 	if (!table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()))	-- Class is not Whitelisted
 		|| (table.HasValue(GAMEMODE.Config.Lists:ModelBlacklist(), ent:GetModel()))	-- Model is Blacklisted
@@ -160,7 +160,7 @@ function CLASS:Use(ent)
 		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") attempted to turn into "..ent:GetClass().." ("..ent:GetModel()..").") end
 		return true -- Use instead of erroring.
 	end
-	
+
 	-- Turn into the prop
 	local eProp = self.Player:GetHands()
 	util.PrecacheModel(ent:GetModel())
@@ -169,25 +169,25 @@ function CLASS:Use(ent)
 	eProp:SetHealth(100)
 	eProp:SetMaxHealth(100)
 	eProp:SetRenderMode(RENDERMODE_TRANSALPHA)
-	
+
 	-- Hull (Optimize into single function? Code is repeated often)
 	local hull = GAMEMODE:PlayerHullFromEntity(self.Player, ent)
-	
+
 	-- View Offset
 	local vo = Vector(0, 0, hull[2].z)
 	GAMEMODE:PlayerSetViewOffset(self.Player, vo, vo)
-			
+
 	-- Health Scaling
 	if (GAMEMODE.Config.Hider:HealthScaling()) then
 		local prc = math.Clamp(self.Player:Health() / self.Player:GetMaxHealth(), 0, 1)
 		local maxhealth = math.Clamp(ent:GetPhysicsObject():GetVolume() / 250, 1, GAMEMODE.Config.Hider:HealthScalingMax())
 		local health = math.Clamp(maxhealth * prc, 1, maxhealth)
-		
+
 		-- Set Health
 		self.Player:SetHealth(health)
 		self.Player:SetMaxHealth(maxhealth)
 	end
-	
+
 	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") turned into "..ent:GetClass().." ("..ent:GetModel()..").") end
 end
 
@@ -196,7 +196,7 @@ function CLASS:AllowPickup(ent) return true end
 -- Menu Buttons
 function CLASS:ShowSpare1()
 	if BaseClass.ShowSpare1(self) then return end
-	
+
 	-- Play a taunt
 	local tauntList = GAMEMODE.Config.Taunt:Hiders()
 	local index = math.random(#tauntList)
@@ -211,10 +211,10 @@ if SERVER then
 	function CLASS:FindUseEntity(defEnt)
 		return self.Player:FindUseEntity()
 	end
-	
+
 	function CLASS:Tick(mv)
 		if (self.Player.Data == nil) then return end
-		
+
 		-- Selection Halo
 		if (GAMEMODE.Config.SelectionHalo:Allow()) && (!GAMEMODE.Config.SelectionHalo:Approximate()) then
 			if (self.Player.Data.SelectionHaloTime == nil) then
@@ -223,12 +223,12 @@ if SERVER then
 				self.Player.Data.SelectionHaloTime = CurTime()
 				local ent = self.Player:FindUseEntity()
 				if (IsValid(ent)
-					&& table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass()) 
+					&& table.HasValue(GAMEMODE.Config.Lists:ClassWhitelist(), ent:GetClass())
 					&& !table.HasValue(GAMEMODE.Config.Lists:ModelBlacklist(), ent:GetModel())) then
 					self.Player:SetNWEntity("SelectionHalo", ent)
 				else
 					self.Player:SetNWBool("SelectionHalo", false)
-				end				
+				end
 			end
 		end
 	end
@@ -241,7 +241,7 @@ function CLASS:Alive() return true end
 function CLASS:ClientSpawn()
 	if GAMEMODE.Config:DebugLog() then print("Prop Hunt CL: Hider '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.ClientSpawn(self, self.Player)
-	
+
 	self.Player:SetRenderMode(RENDERMODE_TRANSALPHA)
 end
 
@@ -257,7 +257,7 @@ function CLASS:ShouldDrawLocal()
 			self.Player:GetHands():SetColor(Color(255, 255, 255, 0))
 		end
 	end
-	
+
 	return (self.Player.Data.ViewDistance or 0) >= 10
 end
 

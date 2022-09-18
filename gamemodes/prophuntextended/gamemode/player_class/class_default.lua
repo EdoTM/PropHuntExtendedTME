@@ -1,6 +1,6 @@
 --[[
 	The MIT License (MIT)
-	
+
 	Copyright (c) 2015 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,7 +31,7 @@ CLASS.CrouchedWalkSpeed	= 0.5		-- Multiply move speed by this when crouching
 CLASS.DuckSpeed			= 0.2		-- How fast to go from not ducking, to ducking
 CLASS.UnDuckSpeed		= 0.2		-- How fast to go from ducking, to not ducking
 CLASS.JumpPower			= 200		-- How powerful our jump should be
-CLASS.CanUseFlashlight	= false		-- Can we use the flashlight
+CLASS.CanUseFlashlight	= true		-- Can we use the flashlight
 CLASS.MaxHealth			= 100		-- Max health we can have
 CLASS.StartHealth		= 100		-- How much health we start with
 CLASS.StartArmor		= 0			-- How much armour we start with
@@ -46,7 +46,7 @@ CLASS.UseVMHands		= true		-- Uses viewmodel hands
 -- Spawn
 function CLASS:InitialSpawn()
 	self.Player.Data = {}
-	self.Player.Data.SelectionHaloTime = CurTime()	
+	self.Player.Data.SelectionHaloTime = CurTime()
 end
 function CLASS:Spawn() end
 function CLASS:Loadout() end
@@ -94,14 +94,14 @@ function CLASS:Use(ent)
 	if (!ent || !ent:IsValid()) then
 		return false
 	end
-	
+
 	-- Cool Down
 	if (self.Player.Data.UseTime) then
 		local timeSinceUse = (CurTime() - self.Player.Data.UseTime)
 		if (0.5 > timeSinceUse) then
 			return false
 		end
-		
+
 		-- Abuse Blacklist (Buttons, Doors, etc)
 		if (5 > timeSinceUse) then
 			local abuseBlacklist = GAMEMODE.Config.Lists:AbuseBlacklist()
@@ -111,7 +111,7 @@ function CLASS:Use(ent)
 		end
 	end
 	self.Player.Data.UseTime = CurTime()
-	
+
 	return true
 end
 function CLASS:AllowPickup(ent) return false end
@@ -132,7 +132,7 @@ function CLASS:ShowSpare2() end
 --! Shared
 -- ------------------------------------------------------------------------- --
 function CLASS:PostThink() end
-function CLASS:Tick(mv) end 
+function CLASS:Tick(mv) end
 function CLASS:FindUseEntity(defEnt) return defEnt end
 function CLASS:Alive() return false end
 
@@ -160,13 +160,13 @@ function CLASS:CalcView(camdata)
 	local cameraDistanceRight	= GAMEMODE.Config.Camera:DistanceRight()
 	local cameraDistanceUp		= GAMEMODE.Config.Camera:DistanceUp()
 	local cameraLag				= GAMEMODE.Config.Camera:Lag()
-	local cameraLagInv			= 1 - cameraLag	
-	
+	local cameraLagInv			= 1 - cameraLag
+
 	-- First/Third Person Target Distance
 	local targetDistance = 0
 	if (self.Player.Data.ThirdPerson) then -- Incremental Distance instead of instant.
 		targetDistance = cameraDistance
-		
+
 		if (cameraCollision == true) then
 			-- Trace from Player to would-be camera position
 			local trace = {
@@ -176,7 +176,7 @@ function CLASS:CalcView(camdata)
 				--[-[
 				filter = function(ent)
 					local filter = { "worldspawn", "ph_prop", "player" }
-					
+
 					if (ent:IsPlayer())
 						|| (table.HasValue(filter, ent:GetClass()))
 						|| (ent == LocalPlayer()) || (ent == LocalPlayer():GetHands()) then
@@ -187,7 +187,7 @@ function CLASS:CalcView(camdata)
 				--]]
 			}
 			local result = util.TraceLine(trace)
-			
+
 			-- The Camera has a Sphere radius of 10.
 			if (result.Hit) then -- Configurable?
 				targetDistance = math.Clamp(result.HitPos:Distance(camdata.origin), 0, cameraDistance)
@@ -196,10 +196,10 @@ function CLASS:CalcView(camdata)
 	else
 		targetDistance = 0
 	end
-	
+
 	-- Fade between Target and Current Distance
 	self.Player.Data.ViewDistance = math.Clamp(((self.Player.Data.ViewDistance or targetDistance) * cameraLag) + (targetDistance * cameraLagInv), 0, GAMEMODE.Config.Camera:DistanceMax())
-	
+
 	-- Adjust CamData and return
 	camdata.origin = camdata.origin - (camdata.angles:Forward() * math.Clamp(self.Player.Data.ViewDistance - 10, 0, self.Player.Data.ViewDistance)) + (camdata.angles:Right() * cameraDistanceRight) + (camdata.angles:Up() * cameraDistanceUp)
 	return camdata

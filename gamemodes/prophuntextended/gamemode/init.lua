@@ -309,9 +309,10 @@ function GM:PlayerHullFromEntity(ply, ent)
 
 		local hullmin = Vector(-hull.x, -hull.y, 0)
 		local hullmax = Vector(hull.x, hull.y, hull.z * 2)
+		local hullmax_duck = Vector(hull.x, hull.y, hull.z)
 
 		ply:SetHull(hullmin, hullmax)
-		ply:SetHullDuck(hullmin, hullmax)
+		ply:SetHullDuck(hullmin, hullmax_duck)
 		net.Start("PlayerSetHull")
 			net.WriteVector(hullmin)
 			net.WriteVector(hullmax)
