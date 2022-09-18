@@ -1,6 +1,6 @@
 --[[
 	The MIT License (MIT)
-	
+
 	Copyright (c) 2015-2018 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,7 +28,7 @@ function UI:Init()
 	self.time = CurTime() - 0.5
 
 	self.padding = 3
-	self.size = Vector(320, 30 + self.padding * 2)
+	self.size = Vector(450, 50 + self.padding * 2)
 	self.size2 = Vector(60, self.size.y)
 	self.colors = {}
 	self.colors.background = Color(0, 0, 0, 204)
@@ -36,7 +36,7 @@ function UI:Init()
 	self.colors.text = Color(255, 255, 255, 255)
 	self.state = {}
 	self.state.name = ""
-	
+
 	self.ui = {}
 	self:DockPadding(self.padding, self.padding, self.padding, self.padding)
 
@@ -49,19 +49,23 @@ function UI:Init()
 	self.ui.round:Dock(LEFT)
 	self.ui.round:SetSize(100, self.size.y)
 
+	title_font_size = 20
+	text_font_size = 24
+	small_text_font_size = 14
+
 	self.ui.round_title = vgui.Create("DLabelDPI", self.ui.round)
-	self.ui.round_title:SetFontEx({ size = 10 })
+	self.ui.round_title:SetFontEx({ size = title_font_size })
 	self.ui.round_title:SetText("Round")
 	self.ui.round_title:SetColor(self.colors.title)
-	self.ui.round_title:SetContentAlignment(2)
+	self.ui.round_title:SetContentAlignment(8)
 	self.ui.round_title:SizeToContents()
 	self.ui.round_title:Dock(TOP)
 
 	self.ui.round_text = vgui.Create("DLabelDPI", self.ui.round)
-	self.ui.round_text:SetFontEx({ size = 14 })
+	self.ui.round_text:SetFontEx({ size = text_font_size })
 	self.ui.round_text:SetText("0 / 10")
 	self.ui.round_text:SetColor(self.colors.text)
-	self.ui.round_text:SetContentAlignment(8)
+	self.ui.round_text:SetContentAlignment(5)
 	self.ui.round_text:Dock(FILL)
 
 	self.ui.time = vgui.Create("Panel", self)
@@ -69,36 +73,36 @@ function UI:Init()
 	self.ui.time:SetSize(100, self.size.y)
 
 	self.ui.time_title = vgui.Create("DLabelDPI", self.ui.time)
-	self.ui.time_title:SetFontEx({ size = 10 })
+	self.ui.time_title:SetFontEx({ size = title_font_size })
 	self.ui.time_title:SetText("Time")
 	self.ui.time_title:SetColor(self.colors.title)
-	self.ui.time_title:SetContentAlignment(2)
+	self.ui.time_title:SetContentAlignment(8)
 	self.ui.time_title:SizeToContents()
 	self.ui.time_title:Dock(TOP)
 
 	self.ui.time_text = vgui.Create("DLabelDPI", self.ui.time)
-	self.ui.time_text:SetFontEx({ size = 14 })
+	self.ui.time_text:SetFontEx({ size = text_font_size })
 	self.ui.time_text:SetText("00:00")
 	self.ui.time_text:SetColor(self.colors.text)
-	self.ui.time_text:SetContentAlignment(8)
+	self.ui.time_text:SetContentAlignment(5)
 	self.ui.time_text:Dock(FILL)
 
 	self.ui.state = vgui.Create("Panel", self)
 	self.ui.state:Dock(FILL)
 
 	self.ui.state_title = vgui.Create("DLabelDPI", self.ui.state)
-	self.ui.state_title:SetFontEx({ size = 14 })
+	self.ui.state_title:SetFontEx({ size = title_font_size })
 	self.ui.state_title:SetText("Waiting for Server...")
 	self.ui.state_title:SetColor(self.colors.title)
-	self.ui.state_title:SetContentAlignment(2)
+	self.ui.state_title:SetContentAlignment(8)
 	self.ui.state_title:SizeToContents()
 	self.ui.state_title:Dock(TOP)
 
 	self.ui.state_text = vgui.Create("DLabelDPI", self.ui.state)
-	self.ui.state_text:SetFontEx({ size = 10 })
+	self.ui.state_text:SetFontEx({ size = small_text_font_size })
 	self.ui.state_text:SetText("Waiting for Server...")
 	self.ui.state_text:SetColor(self.colors.text)
-	self.ui.state_text:SetContentAlignment(8)
+	self.ui.state_text:SetContentAlignment(5)
 	self.ui.state_text:Dock(FILL)
 
 	hook.Add("RoundManagerEnterState", self, self.HandleEnterState);
@@ -119,12 +123,15 @@ function UI:Think()
 	self.time = CurTime()
 
 	-- Update Time
-	self.ui.time_text:SetText(string.format("%02d:%02d", 
-		math.floor(GAMEMODE:GetRoundTime() / 60), 
+	self.ui.time_text:SetText(string.format("%02d:%02d",
+		math.floor(GAMEMODE:GetRoundTime() / 60),
 		math.floor(GAMEMODE:GetRoundTime() % 60)))
 
 	-- Update State Text
 	local round_time = GAMEMODE:GetRoundStateTime()
+	local round_time_minute = math.floor(round_time / 60)
+	local round_time_second = math.floor(round_time % 60)
+
 	local team_id = GAMEMODE.Teams.Spectator
 	if (LocalPlayer() && LocalPlayer():IsPlayer()) then
 		team_id = LocalPlayer():Team()
@@ -132,19 +139,19 @@ function UI:Think()
 
 	if (self.state.name == "Hide") then
 		if (team_id == GAMEMODE.Teams.Seekers) then
-			self.ui.state_text:SetText(string.format("You will be unblinded in %02d:%02d", 
-				math.floor(round_time / 60), math.floor(round_time % 60)))
+			self.ui.state_text:SetText(string.format("You will be unblinded in %02d:%02d",
+				round_time_minute, round_time_second))
 		else
 			self.ui.state_text:SetText(string.format("Seekers unblinded in %02d:%02d...",
-				math.floor(round_time / 60), math.floor(round_time % 60)))
+				round_time_minute, round_time_second))
 		end
 	elseif (self.state.name == "Seek") then
 		if (team_id == GAMEMODE.Teams.Seekers) then
-			self.ui.state_text:SetText(string.format("You have %02d:%02d left to kill all Hiders.", 
-				math.floor(round_time / 60), math.floor(round_time % 60)))
+			self.ui.state_text:SetText(string.format("You have %02d:%02d left to kill all Hiders.",
+				round_time_minute, round_time_second))
 		else
 			self.ui.state_text:SetText(string.format("You have %02d:%02d left to annoy all Seekers.",
-				math.floor(round_time / 60), math.floor(round_time % 60)))
+				round_time_minute, round_time_second))
 		end
 	end
 end
@@ -154,7 +161,7 @@ function UI:Paint()
 	draw.RoundedBox(0, 0, 0, w, h, self.colors.background)
 end
 
-function UI:PerformLayout(w, h)	
+function UI:PerformLayout(w, h)
 end
 
 function UI:UpdateDPI(dpi)
@@ -163,7 +170,7 @@ function UI:UpdateDPI(dpi)
 
 	self.ui.round:SetSize(w2, h2)
 	self.ui.time:SetSize(w2, h2)
-	
+
 	self:DockPadding(self.padding * dpi, self.padding * dpi, self.padding * dpi, self.padding * dpi)
 	self:SetSize(w, h)
 	self:CenterHorizontal()
@@ -171,7 +178,7 @@ function UI:UpdateDPI(dpi)
 
 	self.ui.round:InvalidateLayout()
 	self.ui.time:InvalidateLayout()
-	self:InvalidateLayout()	
+	self:InvalidateLayout()
 end
 
 function UI:UpdateStateDisplay()
@@ -179,7 +186,7 @@ function UI:UpdateStateDisplay()
 	if (LocalPlayer() && LocalPlayer():IsPlayer()) then
 		team_id = LocalPlayer():Team()
 	end
-	
+
 	-- Update Team Color
 	self.ui.bar:SetColor(team.GetColor(team_id))
 
@@ -191,14 +198,12 @@ function UI:UpdateStateDisplay()
 		self.ui.state_title:SetText(team.GetName(team_id))
 		self.ui.state_text:SetText(string.format("Round starts soon..."))
 	elseif (self.state.name == "Hide") then
-		local round_time = GAMEMODE:GetRoundStateTime()
 		if (team_id == GAMEMODE.Teams.Seekers) then
 			self.ui.state_title:SetText("Blinded! Get ready to seek.")
 		else
 			self.ui.state_title:SetText("Hiding Time!")
 		end
 	elseif (self.state.name == "Seek") then
-		local round_time = GAMEMODE:GetRoundStateTime()
 		if (team_id == GAMEMODE.Teams.Seekers) then
 			self.ui.state_title:SetText("Seek & Destroy!")
 		else
@@ -228,7 +233,7 @@ function UI:HandleEnterState(id, name)
 	else
 		self.ui.round_text:SetText(string.format("%d / ∞", GAMEMODE:GetRound()))
 	end
-	
+
 	self:UpdateStateDisplay()
 end
 

@@ -1,6 +1,6 @@
 --[[
 	The MIT License (MIT)
-	
+
 	Copyright (c) 2015 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -46,13 +46,13 @@ CLASS.DropWeaponOnDie	= true
 function CLASS:Spawn()
 	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") spawned.") end
 	BaseClass.Spawn(self)
-		
+
 	-- Settings
 	self.Player:SetMaxHealth(GAMEMODE.Config.Seeker:HealthMax())
 	self.Player:SetHealth(GAMEMODE.Config.Seeker:Health())
 	self.Player:SetRenderMode(RENDERMODE_NORMAL)
 	self.Player:SetColor(Color(255,255,255,255))
-	
+
 	-- Speed and Jump Power
 	self.Player:SetWalkSpeed(GAMEMODE.Config.Seeker:WalkSpeed())
 	if (GAMEMODE.Config.Seeker:Sprint()) then
@@ -61,7 +61,7 @@ function CLASS:Spawn()
 		self.Player:SetRunSpeed(GAMEMODE.Config.Seeker:WalkSpeed())
 	end
 	self.Player:SetJumpPower(GAMEMODE.Config.Seeker:JumpPower())
-	
+
 	-- Hull & View Offset
 	GAMEMODE:PlayerHullFromEntity(self.Player, nil)
 	GAMEMODE:PlayerSetViewOffset(self.Player, Vector(0,0,64), Vector(0,0,32))
@@ -73,51 +73,47 @@ function CLASS:Loadout()
 	for i,weapon in ipairs(weapons) do
 		self.Player:Give(weapon)
 	end
-	
+
 	-- Give the ammo the admin told us to.
 	local ammos = GAMEMODE.Config.Seeker:Ammo()
 	for i,ammo in ipairs(ammos) do
 		local typeCount = string.Split(ammo, ":")
 		self.Player:GiveAmmo(tonumber(typeCount[2]), typeCount[1], true)
 	end
-	
+
 	-- Default weapon stuff
-	local cl_defaultweapon = self.Player:GetInfo("cl_defaultweapon") 
- 	if self.Player:HasWeapon(cl_defaultweapon) then 
+	local cl_defaultweapon = self.Player:GetInfo("cl_defaultweapon")
+ 	if self.Player:HasWeapon(cl_defaultweapon) then
  		self.Player:SelectWeapon(cl_defaultweapon)
- 	end 
+ 	end
 end
 
 -- Damage
 function CLASS:ShouldTakeDamage(attacker)
-	if (IsValid(attacker)) then
-		if (attacker:IsPlayer()) then
-			if (attacker:Team() == self.Player:Team()) then
-				local ffmode = GetConVarNumber("mp_friendlyfire")
-				if (ffmode == 0) then -- Not Allowed
-					return false
-				end
-			end
+	if IsValid(attacker) and attacker:IsPlayer() and attacker:Team() == self.Player:Team() then
+		local ffmode = GetConVar("mp_friendlyfire"):GetInt()
+		if (ffmode == 0) then -- Not Allowed
+			return false
 		end
 	end
 	return true
 end
 
 function CLASS:Damage(victim, attacker, healthRemaining, damageDealt)
-	if ((victim != attacker) && victim:IsPlayer() && attacker:IsPlayer() && (attacker:Team() == victim:Team())) then
-		if (GAMEMODE.Config:DebugLog()) then
+	if victim != attacker and victim:IsPlayer()
+		and attacker:IsPlayer() and attacker:Team() == victim:Team()
+		and (GAMEMODE.Config:DebugLog()) then
 			print("Prop Hunt: Seeker '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..") damaged seeker '"..victim:GetName().."' (SteamID: "..victim:SteamID()..") with "..damageDealt.." damage.")
-		end
 	end
 end
 
 function CLASS:Hurt(victim, attacker, healthRemaining, damageTaken)
-	if ((victim != attacker) && victim:IsPlayer() && attacker:IsPlayer() && (attacker:Team() == victim:Team())) then
-		if (GAMEMODE.Config:DebugLog()) then 
+	if victim != attacker and victim:IsPlayer() and attacker:IsPlayer() and attacker:Team() == victim:Team() then
+		if (GAMEMODE.Config:DebugLog()) then
 			print("Prop Hunt: Seeker '"..victim:GetName().."' (SteamID: "..victim:SteamID()..") was hurt by seeker '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..") with "..damageTaken.." damage.")
 		end
-		
-		if (GetConVarNumber("mp_friendlyfire") == 2) then
+
+		if GetConVar("mp_friendlyfire"):GetInt() == 2 then
 			victim:SetHealth(healthRemaining + damageTaken)
 			attacker:TakeDamage(damageTaken, attacker, attacker)
 			print("Prop Hunt: Seeker '"..victim:GetName().."' (SteamID: "..victim:SteamID()..") reflected "..damageTaken.." to seeker '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..").")
@@ -128,18 +124,16 @@ end
 function CLASS:DamageEntity(ent, att, dmg)
 	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") damaged entity "..ent:GetClass()..".") end
 
-	if (GAMEMODE:GetRoundState() != GAMEMODE.States.Seek) then return end	
-	if (!IsValid(ent) || !IsValid(att)) then return end
+	if (GAMEMODE:GetRoundState() != GAMEMODE.States.Seek) then return end
+	if (!IsValid(ent) or !IsValid(att)) then return end
 	if (att == ent) then return end
-	
+
 	-- Only take damage during this phase.
-	if IsValid(ent) && (!(ent:IsPlayer())) then
+	if IsValid(ent) and (!(ent:IsPlayer())) then
 		if (ent:GetClass() == "ph_prop") then
 			ent:GetOwner():TakeDamageInfo(dmg)
 			self.Player.Data.RandomWeight = self.Player.Data.RandomWeight - 1
-		elseif (ent:GetClass() == "func_breakable") then
-		elseif (ent:GetClass() == "prop_ragdoll") then
-		else
+		elseif ent:GetClass() != "func_breakable" and ent:GetClass() != "prop_ragdoll" then
 			att:TakeDamage(GAMEMODE.Config.Seeker:HealthPenalty(), ent, ent)
 		end
 	end
@@ -148,12 +142,10 @@ end
 -- Death
 function CLASS:DoDeath(attacker, dmginfo)
 	BaseClass.DoDeath(self, attacker, dmginfo)
-	if GAMEMODE.Config:DebugLog() then 
-		if (IsValid(attacker) && attacker:IsPlayer() && attacker != self.Player) then
-			print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") killed by '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..").")
-		end
+	if GAMEMODE.Config:DebugLog() and IsValid(attacker) and attacker:IsPlayer() and attacker != self.Player then
+		print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") killed by '"..attacker:GetName().."' (SteamID: "..attacker:SteamID()..").")
 	end
-	
+
 	if SERVER then
 		self.Player:SetShouldServerRagdoll(true)
 		--self.Player:CreateRagdoll()
@@ -163,7 +155,7 @@ end
 function CLASS:PostDeath()
 	if (GAMEMODE.Config:DebugLog()) then print("Prop Hunt: Seeker '"..self.Player:GetName().."' (SteamID: "..self.Player:SteamID()..") died.") end
 	BaseClass.PostDeath(self, inflictor, attacker)
-	
+
 	self.Player:UnLock()
 end
 
@@ -176,7 +168,7 @@ function CLASS:DeathThink()
 		self.Player:Spawn()
 		return true
 	end
-	
+
 	return false
 end
 
@@ -189,9 +181,9 @@ function CLASS:SetModel()
 	end
 	util.PrecacheModel(modelname)
 	self.Player:SetModel(modelname)
-	
+
 	-- Hands
-	self.Player:SetupHands()	
+	self.Player:SetupHands()
 end
 
 -- Interaction
@@ -202,7 +194,7 @@ function CLASS:CanPickupWeapon(ent) return true end
 -- Menu Buttons
 function CLASS:ShowSpare1()
 	if BaseClass.ShowSpare1(self) then return end
-	
+
 	-- Play a taunt
 	local tauntList = GAMEMODE.Config.Taunt:Seekers()
 	local index = math.random(#tauntList)
@@ -225,21 +217,22 @@ end
 
 function CLASS:HUDPaint()
 	BaseClass.HUDPaint(self)
-	
+
 	local State = GetGlobalInt("RoundState", GAMEMODE.States.PreMatch)
 	if (State == GAMEMODE.States.Hide) then
-		local intTime = math.ceil(GetGlobalInt("RoundTime"))
+		local intTime = math.ceil(GAMEMODE:GetRoundStateTime())
 		local strTime = tostring(intTime)
-		
+
 		-- Show Status at the center
 		surface.SetTextColor( 255, 255, 255, 255 )
 		if (intTime >= 1) then
 			surface.SetFont("CloseCaption_Bold")
-			local w,h = surface.GetTextSize("Unblinded in "..strTime.." seconds...")
+			unblind_text = "Unblinded in "..strTime.." seconds..."
+			local w,h = surface.GetTextSize(unblind_text)
 			surface.SetTextPos( ScrW()/2 - w / 2, ScrH()/2 - h / 2)
-			surface.DrawText("Unblinded in "..strTime.." seconds...")
+			surface.DrawText(unblind_text)
 		else
-			surface.SetFont("PHHugeAssFont")
+			surface.SetFont("CloseCaption_Bold")
 			local w,h = surface.GetTextSize("NOW")
 			surface.SetTextPos( ScrW()/2 - w / 2, ScrH()/2 - h / 2)
 			surface.DrawText("NOW")

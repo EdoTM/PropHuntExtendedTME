@@ -1,6 +1,6 @@
 --[[
 	The MIT License (MIT)
-	
+
 	Copyright (c) 2015 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -68,9 +68,9 @@ include "server/states/state_postmatch.lua"
 
 function GM:Initialize()
 	print("-------------------------------------------------------------------------")
-	print("Prop Hunt: Initializing...")
-	
-	print("Prop Hunt: Registering Networked Messages...")
+	print("Prop Hunt: Initializing .. .")
+
+	print("Prop Hunt: Registering Networked Messages .. .")
 	util.AddNetworkString("PlayerManagerInitialClientSpawn")
 	util.AddNetworkString("PlayerManagerClientSpawn")
 	util.AddNetworkString("PlayerSetHull")
@@ -79,43 +79,43 @@ function GM:Initialize()
 	util.AddNetworkString("PlayerRegisterPropEntity")
 	util.AddNetworkString("PlayerEnablePropRotation")
 	util.AddNetworkString("PlayerDisablePropRotation")
-	
-	print("Prop Hunt: Initializing Gamemode Data...")
+
+	print("Prop Hunt: Initializing Gamemode Data .. .")
 	self.Data = {}
 	self.Data.RoundTime = 0
 	self.Data.RoundStartTime = 0
 	self.Data.StateTime = 0
-	
+
 	print("Prop Hunt: Initializing Round Manager")
 	RoundManager:SetState(StatePreRound)
-	
-	print("Prop Hunt: Precaching...")
+
+	print("Prop Hunt: Precaching .. .")
 	GAMEMODE.Config.Taunt:Seekers()
 	GAMEMODE.Config.Taunt:Hiders()
-	
+
 	print("Prop Hunt: Complete.")
 	print("-------------------------------------------------------------------------")
 end
 
 -- Player Connected
 function GM:PlayerConnect(name, ip)
-	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..name.."' connecting from IP '"..ip.."'.") end
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. name .. "' connecting from IP '" .. ip .. "'.") end
 end
 
 -- Player Authenticated
 function GM:PlayerAuthed(ply, steamid, uniqueid)
-	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") authenticated.") end
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") authenticated.") end
 end
 
 -- Player Disconnected
 function GM:PlayerDisconnected(ply)
-	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") disconnected.") end
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") disconnected.") end
 end
 
 -- Player Spawn (Initial)
 function GM:PlayerInitialSpawn(ply)
-	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") spawned for the first time, applying defaults...") end
-	
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") spawned for the first time, applying defaults .. .") end
+
 	if (!ply.Data) then
 		-- Initialize Data Structure
 		ply.Data = {}
@@ -123,36 +123,36 @@ function GM:PlayerInitialSpawn(ply)
 		ply.Data.AliveTime = 0
 		ply.Data.RandomWeight = 0 -- Higher means higher chance of becoming Seeker instead of Hider.
 	end
-	
+
 	-- Kill Silently
 	ply:KillSilent()
-	
+
 	-- Show Team Selection Menu
 	ply:SetTeam(GAMEMODE.Teams.Spectators)
 	self:ShowTeam(ply)
-	
+
 	-- Bot: Auto Assign to Team
 	if (ply:IsBot()) then
 		if team.NumPlayers(self.Teams.Hiders) > team.NumPlayers(self.Teams.Seekers) then
-			if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Bot '"..ply:GetName().."' assigned to Seekers.") end
+			if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Bot '" .. ply:GetName() .. "' assigned to Seekers.") end
 			ply:SetTeam(self.Teams.Seekers)
 		else
-			if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Bot '"..ply:GetName().."' assigned to Hiders.") end
+			if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Bot '" .. ply:GetName() .. "' assigned to Hiders.") end
 			ply:SetTeam(self.Teams.Hiders)
 		end
 	end
 
 	-- Notify Player Manager
 	player_manager.RunClass(ply, "InitialSpawn")
-	
+
 	-- Signal Client
 	net.Start("PlayerManagerInitialClientSpawn");net.Send(ply)
 end
 
 -- Player Spawn
 function GM:PlayerSpawn(ply)
-	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") spawned in.") end
-	
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") spawned in.") end
+
 	-- Player Manager: Assign Player Class
 	local class = team.GetClass(ply:Team())
 	if (class) then
@@ -164,15 +164,15 @@ function GM:PlayerSpawn(ply)
 	else
 		player_manager.SetPlayerClass(ply, "Spectator")
 	end
-	
+
 	-- Notify Player Manager
 	player_manager.OnPlayerSpawn(ply)
 	player_manager.RunClass(ply, "Spawn")
-		
+
 	-- Some hooks are not called
 	hook.Call("PlayerSetModel", self, ply)
 	hook.Call("PlayerLoadout", self, ply)
-	
+
 	-- Signal Client
 	net.Start("PlayerManagerClientSpawn");net.Send(ply)
 end
@@ -180,18 +180,18 @@ end
 -- Player requests Team Change
 function GM:PlayerRequestTeam(ply, teamId)
 	if self:PlayerCanJoinTeam(ply, teamId) then
-		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") requested to join Team "..team.GetName(teamId)..".") end
-		
+		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") requested to join Team " .. team.GetName(teamId) .. ".") end
+
 		if (ply:Team() != teamId) then
 			ply:KillSilent()
 			ply:SetTeam(teamId)
-			
+
 			if (GetGlobalInt("RoundState", GAMEMODE.States.PreMatch) <= GAMEMODE.States.PreRound) then
 				ply.Alive = true
 				ply.AliveTime = CurTime()
 			end
 		else
-			if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") attempted to rejoin the Team it is already in.") end
+			if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") attempted to rejoin the Team it is already in.") end
 		end
 	end
 end
@@ -202,7 +202,7 @@ end
 function GM:PlayerLoadout(ply) player_manager.RunClass(ply, "Loadout") end
 function GM:PlayerDeath(ply, inflictor, attacker)
 	player_manager.RunClass(ply, "Death", inflictor, attacker)
-	
+
 	-- Signal Client Stuff
 	if IsValid(attacker) then
 		if attacker:IsPlayer() then
@@ -235,11 +235,11 @@ end
 function GM:PlayerSilentDeath(ply) player_manager.RunClass(ply, "SilentDeath") end
 function GM:PostPlayerDeath(ply)
 	player_manager.RunClass(ply, "PostDeath")
-	
+
 	-- Debug Mode: Respawn after Death
 	if (GAMEMODE.Config:Debug()) then
 		ply.Data.Alive = true
-		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Debug Mode active, Player "..ply:GetName().." was respawned.") end
+		if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Debug Mode active, Player " .. ply:GetName() .. " was respawned.") end
 	end
 end
 function GM:DoPlayerDeath(ply, attacker, dmg) player_manager.RunClass(ply, "DoDeath", attacker, dmg) end
@@ -258,7 +258,7 @@ end
 
 function GM:PlayerHurt(victim, attacker, healthRemaining, damageTaken)
 	player_manager.RunClass(victim, "Hurt", victim, attacker, healthRemaining, damageTaken)
-	
+
 	if (IsValid(attacker) && attacker:IsPlayer()) then
 		player_manager.RunClass(attacker, "Damage", victim, attacker, healthRemaining, damageTaken)
 	end
@@ -266,8 +266,8 @@ end
 
 function GM:EntityTakeDamage(ent, dmg)
 	local att = dmg:GetAttacker()
-	
-	if (att) && (att:IsValid()) && (att:IsPlayer()) then
+
+	if att && (att:IsValid()) && (att:IsPlayer()) then
 		player_manager.RunClass(att, "DamageEntity", ent, att, dmg)
 	end
 end
@@ -296,7 +296,7 @@ function GM:SetRoundWinner(Winner)
 end
 
 function GM:PlayerHullFromEntity(ply, ent)
-	if (ent) && (ent:IsValid()) then
+	if ent && (ent:IsValid()) then
 		local hmin, hmax = ent:OBBMins(), ent:OBBMaxs()
 		local hull = Vector(hmax.x - hmin.x, hmax.y - hmin.y, hmax.z - hmin.z)
 		if hull.x <= hull.y then
@@ -306,10 +306,10 @@ function GM:PlayerHullFromEntity(ply, ent)
 		end
 		hull:Mul(0.5)
 		hull:Mul(0.95) -- Reduce size slightly
-		
+
 		local hullmin = Vector(-hull.x, -hull.y, 0)
 		local hullmax = Vector(hull.x, hull.y, hull.z * 2)
-		
+
 		ply:SetHull(hullmin, hullmax)
 		ply:SetHullDuck(hullmin, hullmax)
 		net.Start("PlayerSetHull")
@@ -333,7 +333,7 @@ function GM:PlayerSetViewOffset(ply, vo, voduck)
 	else
 		ply:SetCurrentViewOffset(vo)
 	end
-	
+
 	-- Signal Client
 	net.Start("PlayerViewOffset")
 	net.WriteVector(vo)
@@ -359,38 +359,38 @@ function GM:ShowSpare2(ply)	player_manager.RunClass(ply, "ShowSpare2") end -- F4
 
 -- Debug Command: Print All Players
 concommand.Add("ph_debug_printplayers", function(ply, cmd, args, argStr)
-	if GAMEMODE.Config:DebugLog() then 
+	if GAMEMODE.Config:DebugLog() then
 		print ("All Players:")
 		for i,ply in ipairs(player.GetAll()) do
-			print("  "..ply:GetName().." (SteamID: "..ply:SteamID()..") - Team "..team.GetName(ply:Team()).. " - Alive "..tostring(ply.Data.Alive))
+			print(" " .. ply:GetName() .. " (SteamID: " .. ply:SteamID() .. ") - Team " .. team.GetName(ply:Team()) .. " - Alive " .. tostring(ply.Data.Alive))
 		end
-		
+
 		print ("Spectators:")
 		for i,ply in ipairs(team.GetPlayers(GAMEMODE.Teams.Spectators)) do
-			print("  "..ply:GetName().." (SteamID: "..ply:SteamID()..")")
+			print(" " .. ply:GetName() .. " (SteamID: " .. ply:SteamID() .. ")")
 		end
-		
+
 		print ("Seekers:")
 		for i,ply in ipairs(team.GetPlayers(GAMEMODE.Teams.Seekers)) do
-			print("  "..ply:GetName().." (SteamID: "..ply:SteamID()..")")
+			print(" " .. ply:GetName() .. " (SteamID: " .. ply:SteamID() .. ")")
 		end
-		
+
 		print ("Hiders:")
 		for i,ply in ipairs(team.GetPlayers(GAMEMODE.Teams.Hiders)) do
-			print("  "..ply:GetName().." (SteamID: "..ply:SteamID()..")")
+			print(" " .. ply:GetName() .. " (SteamID: " .. ply:SteamID() .. ")")
 		end
 	end
 end, nil, nil, FCVAR_CLIENTCMD_CAN_EXECUTE + FCVAR_CHEAT)
 
 -- Debug Command: Print All Players
 concommand.Add("ph_debug_stats", function(ply, cmd, args, argStr)
-	if GAMEMODE.Config:DebugLog() then 
+	if GAMEMODE.Config:DebugLog() then
 		for i,ply in ipairs(player.GetAll()) do
-			print(ply:GetName().." (SteamID: "..ply:SteamID()..")")
-			print("  Team:      "..team.GetName(ply:Team()))
-			print("  Alive:     "..tostring(ply.Data.Alive))
-			print("  AliveTime: "..tostring(ply.Data.AliveTime))
-			print("  Score:     "..tostring(ply.Data.RandomWeight))
+			print(ply:GetName() .. " (SteamID: " .. ply:SteamID() .. ")")
+			print(" Team:   " .. team.GetName(ply:Team()))
+			print(" Alive:   " .. tostring(ply.Data.Alive))
+			print(" AliveTime: " .. tostring(ply.Data.AliveTime))
+			print(" Score:   " .. tostring(ply.Data.RandomWeight))
 		end
 	end
 end, nil, nil, FCVAR_CLIENTCMD_CAN_EXECUTE + FCVAR_CHEAT)
@@ -404,23 +404,23 @@ net.Receive("PlayerEnablePropRotation", function(len, ply)
 	if (ply:Team() != GAMEMODE.Teams.Hiders) then
 		return
 	end
-	
+
 	angle = net.ReadAngle()
-	
+
 	ply:SetNWBool("PropRotation", true)
 	ply.Data.Prop:ApplyRotation(angle)
-	
-	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") enabled prop rotation with angle ["..tostring(angle).."].") end	
+
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") enabled prop rotation with angle [" .. tostring(angle) .. "].") end
 end)
 net.Receive("PlayerDisablePropRotation", function(len, ply)
 	if (ply:Team() != GAMEMODE.Teams.Hiders) then
 		return
 	end
-	
+
 	angle = net.ReadAngle()
-	
+
 	ply:SetNWBool("PropRotation", false)
 	ply.Data.Prop:ApplyRotation(angle)
-	
-	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '"..ply:GetName().."' (SteamID: "..ply:SteamID()..") enabled prop rotation with angle ["..tostring(angle).."].") end	
+
+	if GAMEMODE.Config:DebugLog() then print("Prop Hunt: Player '" .. ply:GetName() .. "' (SteamID: " .. ply:SteamID() .. ") enabled prop rotation with angle [" .. tostring(angle) .. "].") end
 end)

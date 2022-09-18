@@ -1,6 +1,6 @@
 --[[
 	The MIT License (MIT)
-	
+
 	Copyright (c) 2015 Xaymar
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -300,7 +300,8 @@ GM.Config.Taunt.HidersCache = ""
 GM.Config.Taunt.HidersCacheDynamic = nil
 GM.Config.Taunt.HidersCacheStatic = nil
 GM.Config.Taunt.HidersCacheFull = nil
-GM.Config.Taunt.ConVars.Hiders = CreateConVarIfNotExists("ph_taunt_hiders", "ambient/alarms/apc_alarm_pass1.wav,ambient/alarms/manhack_alert_pass1.wav,ambient/alarms/razortrain_horn1.wav,ambient/alarms/scanner_alert_pass1.wav,ambient/alarms/train_horn2.wav,ambient/alarms/train_horn_distant1.wav,ambient/alarms/warningbell1.wav,ambient/energy/whiteflash.wav,ambient/intro/alyxremove.wav,ambient/intro/logosfx.wav,ambient/levels/launch/1stfiringwarning.wav,ambient/levels/launch/rockettakeoffblast.wav,ambient/misc/ambulance1.wav,ambient/misc/carhonk1.wav,ambient/misc/carhonk2.wav,ambient/misc/carhonk3.wav,ambient/outro/gunshipcrash.wav,ambient/3dmeagle.wav,beams/beamstart5.wav,buttons/bell1.wav,buttons/weapon_cant_buy.wav,common/bass.wav,common/bugreporter_failed.wav,common/warning.wav,doors/door_squeek1.wav,friends/friend_join.wav,friends/friend_online.wav,friends/message.wav,hostage/hunuse/comeback.wav,hostage/hunuse/dontleaveme.wav,hostage/hunuse/yeahillstay.wav,items/gift_drop.wav,music/radio1.mp3,phx/eggcrack.wav,plats/elevbell1.wav,player/headshot1.wav,player/headshot2.wav,player/sprayer.wav,radio/enemydown.wav,radio/go.wav,radio/locknload.wav,radio/negative.wav,radio/rounddraw.wav,radio/takepoint.wav,resource/warning.wav,ui/achievement_earned.wav,ui/freeze_cam.wav,vehicles/junker/radar_ping_friendly1.wav,weapons/c4/c4_beep1.wav,weapons/c4/c4_click.wav,weapons/awp/awp1.wav,vo/canals/female01/gunboat_giveemhell.wav,vo/canals/female01/gunboat_justintime.wav,vo/canals/female01/stn6_incoming.wav,vo/canals/male01/gunboat_giveemhell.wav,vo/canals/male01/gunboat_justintime.wav,vo/canals/male01/stn6_incoming.wav,vo/canals/al_radio_stn6.wav,vo/canals/arrest_getgoing.wav,vo/canals/arrest_helpme.wav,vo/canals/arrest_lookingforyou.wav,vo/canals/boxcar_lethimhelp.wav,vo/canals/matt_closecall.wav,vo/canals/premassacre.wav,vo/ravenholm/aimforhead.wav,vo/ravenholm/bucket_patience.wav,vo/ravenholm/madlaugh01.wav,vo/ravenholm/madlaugh02.wav,vo/ravenholm/madlaugh03.wav,vo/ravenholm/madlaugh04.wav,weapons/strider_buster/ol12_stickybombcreator.wav,weapons/c4/c4_explode1.wav,weapons/357/357_fire2.wav,weapons/357/357_fire3.wav,weapons/scout/scout_fire-1.wav,weapons/smokegrenade/sg_explode.wav,weapons/grenade_launcher1.wav,weapons/explode3.wav,weapons/underwater_explode3.wav,items/nvg_on.wav,hostage/huse/letsdoit.wav,hostage/huse/illfollow.wav,hostage/huse/getouttahere.wav,doors/door_screen_move1.wav,doors/heavy_metal_stop1.wav,doors/default_move.wav,common/stuck2.wav,ambient/water_splash1.wav,ambient/water_splash2.wav,ambient/water_splash3.wav,ambient/weather/thunder1.wav,ambient/weather/thunder2.wav,ambient/weather/thunder3.wav,ambient/weather/thunder4.wav,ambient/weather/thunder5.wav,ambient/weather/thunder6.wav,ambient/outro/thunder7.wav,ambient/voices/crying_loop1.wav,ambient/voices/playground_memory.wav,ambient/voices/f_scream1.wav,ambient/voices/m_scream1.wav,ambient/voices/cough1.wav,ambient/voices/cough2.wav,ambient/voices/cough3.wav,ambient/voices/cough4.wav,ambient/overhead/plane1.wav,ambient/overhead/plane2.wav,ambient/overhead/plane3.wav,ambient/overhead/hel1.wav,ambient/overhead/hel2.wav,ambient/misc/truck_backup1.wav,ambient/misc/truck_drive1.wav,ambient/misc/truck_drive2.wav,ambient/machines/pneumatic_drill_1.wav,ambient/machines/pneumatic_drill_2.wav,ambient/machines/pneumatic_drill_3.wav,ambient/machines/pneumatic_drill_4.wav,ambient/machines/station_train_squeel.wav,ambient/machines/ticktock.wav,ambient/creatures/teddy.wav,ambient/creatures/town_child_scream1.wav,ambient/creatures/town_moan1.wav,ambient/creatures/town_muffled_cry1.wav,ambient/creatures/town_scared_breathing1.wav,ambient/creatures/town_scared_breathing2.wav,ambient/creatures/town_scared_sob1.wav,ambient/creatures/town_scared_sob2.wav,ambient/creatures/town_zombie_call1.wav", 0, "Prop Hunt: Hider Taunts")
+-- GM.Config.Taunt.ConVars.Hiders = CreateConVarIfNotExists("ph_taunt_hiders", "ambient/alarms/apc_alarm_pass1.wav,ambient/alarms/manhack_alert_pass1.wav,ambient/alarms/razortrain_horn1.wav,ambient/alarms/scanner_alert_pass1.wav,ambient/alarms/train_horn2.wav,ambient/alarms/train_horn_distant1.wav,ambient/alarms/warningbell1.wav,ambient/energy/whiteflash.wav,ambient/intro/alyxremove.wav,ambient/intro/logosfx.wav,ambient/levels/launch/1stfiringwarning.wav,ambient/levels/launch/rockettakeoffblast.wav,ambient/misc/ambulance1.wav,ambient/misc/carhonk1.wav,ambient/misc/carhonk2.wav,ambient/misc/carhonk3.wav,ambient/outro/gunshipcrash.wav,ambient/3dmeagle.wav,beams/beamstart5.wav,buttons/bell1.wav,buttons/weapon_cant_buy.wav,common/bass.wav,common/bugreporter_failed.wav,common/warning.wav,doors/door_squeek1.wav,friends/friend_join.wav,friends/friend_online.wav,friends/message.wav,hostage/hunuse/comeback.wav,hostage/hunuse/dontleaveme.wav,hostage/hunuse/yeahillstay.wav,items/gift_drop.wav,music/radio1.mp3,phx/eggcrack.wav,plats/elevbell1.wav,player/headshot1.wav,player/headshot2.wav,player/sprayer.wav,radio/enemydown.wav,radio/go.wav,radio/locknload.wav,radio/negative.wav,radio/rounddraw.wav,radio/takepoint.wav,resource/warning.wav,ui/achievement_earned.wav,ui/freeze_cam.wav,vehicles/junker/radar_ping_friendly1.wav,weapons/c4/c4_beep1.wav,weapons/c4/c4_click.wav,weapons/awp/awp1.wav,vo/canals/female01/gunboat_giveemhell.wav,vo/canals/female01/gunboat_justintime.wav,vo/canals/female01/stn6_incoming.wav,vo/canals/male01/gunboat_giveemhell.wav,vo/canals/male01/gunboat_justintime.wav,vo/canals/male01/stn6_incoming.wav,vo/canals/al_radio_stn6.wav,vo/canals/arrest_getgoing.wav,vo/canals/arrest_helpme.wav,vo/canals/arrest_lookingforyou.wav,vo/canals/boxcar_lethimhelp.wav,vo/canals/matt_closecall.wav,vo/canals/premassacre.wav,vo/ravenholm/aimforhead.wav,vo/ravenholm/bucket_patience.wav,vo/ravenholm/madlaugh01.wav,vo/ravenholm/madlaugh02.wav,vo/ravenholm/madlaugh03.wav,vo/ravenholm/madlaugh04.wav,weapons/strider_buster/ol12_stickybombcreator.wav,weapons/c4/c4_explode1.wav,weapons/357/357_fire2.wav,weapons/357/357_fire3.wav,weapons/scout/scout_fire-1.wav,weapons/smokegrenade/sg_explode.wav,weapons/grenade_launcher1.wav,weapons/explode3.wav,weapons/underwater_explode3.wav,items/nvg_on.wav,hostage/huse/letsdoit.wav,hostage/huse/illfollow.wav,hostage/huse/getouttahere.wav,doors/door_screen_move1.wav,doors/heavy_metal_stop1.wav,doors/default_move.wav,common/stuck2.wav,ambient/water_splash1.wav,ambient/water_splash2.wav,ambient/water_splash3.wav,ambient/weather/thunder1.wav,ambient/weather/thunder2.wav,ambient/weather/thunder3.wav,ambient/weather/thunder4.wav,ambient/weather/thunder5.wav,ambient/weather/thunder6.wav,ambient/outro/thunder7.wav,ambient/voices/crying_loop1.wav,ambient/voices/playground_memory.wav,ambient/voices/f_scream1.wav,ambient/voices/m_scream1.wav,ambient/voices/cough1.wav,ambient/voices/cough2.wav,ambient/voices/cough3.wav,ambient/voices/cough4.wav,ambient/overhead/plane1.wav,ambient/overhead/plane2.wav,ambient/overhead/plane3.wav,ambient/overhead/hel1.wav,ambient/overhead/hel2.wav,ambient/misc/truck_backup1.wav,ambient/misc/truck_drive1.wav,ambient/misc/truck_drive2.wav,ambient/machines/pneumatic_drill_1.wav,ambient/machines/pneumatic_drill_2.wav,ambient/machines/pneumatic_drill_3.wav,ambient/machines/pneumatic_drill_4.wav,ambient/machines/station_train_squeel.wav,ambient/machines/ticktock.wav,ambient/creatures/teddy.wav,ambient/creatures/town_child_scream1.wav,ambient/creatures/town_moan1.wav,ambient/creatures/town_muffled_cry1.wav,ambient/creatures/town_scared_breathing1.wav,ambient/creatures/town_scared_breathing2.wav,ambient/creatures/town_scared_sob1.wav,ambient/creatures/town_scared_sob2.wav,ambient/creatures/town_zombie_call1.wav", 0, "Prop Hunt: Hider Taunts")
+GM.Config.Taunt.ConVars.Hiders = CreateConVarIfNotExists("ph_taunt_hiders", "meme/irario.mp3", 0, "Prop Hunt: Hider Taunts")
 function GM.Config.Taunt:Hiders()
 	local str = self.ConVars.Hiders:GetString()
 	if (self.HidersCacheDynamic == nil)
@@ -423,19 +424,19 @@ if CLIENT then
 	function GM.Config.NamePlates:Show()
 		return self.ConVars.Show:GetBool()
 	end
-	
+
 	-- Scale
 	GM.Config.NamePlates.ConVars.Scale = CreateConVarIfNotExists("ph_nameplates_scale", "0.05", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: World scale of name plate, a setting of 1 means 1px = 1unit.")
 	function GM.Config.NamePlates:Scale()
 		return self.ConVars.Scale:GetFloat()
 	end
-	
+
 	-- Height
 	GM.Config.NamePlates.ConVars.Height = CreateConVarIfNotExists("ph_nameplates_height", "10", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Height above player.")
 	function GM.Config.NamePlates:Height()
 		return self.ConVars.Height:GetFloat()
 	end
-	
+
 	-- Tint Color
 	GM.Config.NamePlates.ConVars.TintHue = CreateConVarIfNotExists("ph_nameplates_tint_hue", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint hue.")
 	function GM.Config.NamePlates:TintHue()
@@ -449,18 +450,18 @@ if CLIENT then
 	function GM.Config.NamePlates:TintValue()
 		return self.ConVars.TintValue:GetFloat()
 	end
-	
+
 	-- Tint By Health
 	GM.Config.NamePlates.ConVars.TintHealth = CreateConVarIfNotExists("ph_nameplates_tint_health", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint the nameplate using their health percent.")
 	function GM.Config.NamePlates:TintHealth()
 		return self.ConVars.TintHealth:GetBool()
 	end
-	
+
 	-- Tint By Team
 	GM.Config.NamePlates.ConVars.TintTeam = CreateConVarIfNotExists("ph_nameplates_tint_team", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Nameplates: Tint the nameplate with the team colors.")
 	function GM.Config.NamePlates:TintTeam()
 		return self.ConVars.TintTeam:GetBool()
-	end	
+	end
 end
 
 -- ------------------------------------------------------------------------- --
@@ -499,7 +500,7 @@ if CLIENT then
 			return false
 		end
 	end
-	
+
 	-- Settings
 	GM.Config.SelectionHalo.ConVars.Passes = CreateConVarIfNotExists("ph_selectionhalo_passes", "1", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Passes")
 	function GM.Config.SelectionHalo:Passes()
@@ -513,7 +514,7 @@ if CLIENT then
 	function GM.Config.SelectionHalo:IgnoreZ()
 		return self.ConVars.IgnoreZ:GetBool()
 	end
-	
+
 	-- Blur
 	GM.Config.SelectionHalo.ConVars.BlurX = CreateConVarIfNotExists("ph_selectionhalo_blur_x", "2", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Blur X")
 	function GM.Config.SelectionHalo:BlurX()
@@ -523,7 +524,7 @@ if CLIENT then
 	function GM.Config.SelectionHalo:BlurY()
 		return self.ConVars.BlurY:GetFloat()
 	end
-	
+
 	-- Tint Color
 	GM.Config.SelectionHalo.ConVars.TintHue = CreateConVarIfNotExists("ph_selectionhalo_tint_hue", "0", FCVAR_ARCHIVE + FCVAR_CLIENTDLL, "Selection Halo: Tint Hue")
 	function GM.Config.SelectionHalo:TintHue()
