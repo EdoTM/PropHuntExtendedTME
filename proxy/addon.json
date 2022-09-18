@@ -1,8 +1,0 @@
-{
-	"title"		: "Prop Hunt Extended (Proxy Gamemode)",
-	"type"		: "gamemode",
-	"tags"		: [ ],
-	"ignore"	: [
-		"addon.txt"
-	]
-}
