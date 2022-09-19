@@ -63,8 +63,8 @@ function CLASS:Spawn()
 	self.Player:SetJumpPower(GAMEMODE.Config.Seeker:JumpPower())
 
 	-- Hull & View Offset
-	--GAMEMODE:PlayerHullFromEntity(self.Player, nil)
-	--GAMEMODE:PlayerSetViewOffset(self.Player, Vector(0,0,64), Vector(0,0,32))
+	GAMEMODE:PlayerHullFromEntity(self.Player, nil)
+	GAMEMODE:PlayerSetViewOffset(self.Player, Vector(0,0,64), Vector(0,0,32))
 end
 
 function CLASS:Loadout()
